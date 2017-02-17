@@ -9,36 +9,27 @@ class MyHTMLParser(HTMLParser):
         HTMLParser.__init__(self)
     
     def read(self, data):
-        self.is_script = False
         self.script_data = []
         self.reset()
         self.feed(data)
         return self.script_data
     
     def handle_starttag(self, tag, attrs):
-        #print "Encountered start tag: ", tag
-        if tag == "script":
-            self.is_script = True
-            print "script@p", self.getpos() 
-            for attr in attrs:
-                print "  attr: ", attr
-        for a in attrs:
-            if a == "placeholder":
-                print "IMPORTANT PLACEHOLDER", a
+        return tag
 
     def handle_endtag(self, tag):
-        if tag == "script":
-            #print "script block ended"
-            self.is_script = False
         return tag
 
     def handle_data(self, data):
-        if self.is_script:
+        if 'accessToken' in data:
+            print "found it!"
             self.script_data.append(data)
         return data
-        #print "Encountered data!: ", data
 
     def handle_comment(self, comment):
+        if 'accessToken' in comment:
+            print "found it!"
+            self.script_data.append(data)
         return comment
 
 #get response from server
@@ -52,4 +43,5 @@ parser = MyHTMLParser()
 
 #read returns all data within a <script> tag
 data = parser.read(html)
-
+#print data
+#{"accessToken":null,
